@@ -24,6 +24,8 @@ default: &default
 development:
   <<: *default
   database: messenger_api_development
+  username: postgres
+  password: 123
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -82,5 +84,5 @@ test:
 production:
   <<: *default
   database: messenger_api_production
-  username: messenger_api
-  password: <%= ENV['MESSENGER_API_DATABASE_PASSWORD'] %>
+  username: postgres
+  password: 123
