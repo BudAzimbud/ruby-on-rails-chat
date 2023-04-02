@@ -1,4 +1,6 @@
-require "#{Rails.root}/app/auth/authenticate_user"
+require "authenticate_user"
+require 'authorize_api_request'
+
 # app/controllers/users_controller.rb
 class UsersController < ApplicationController
 
@@ -19,6 +21,16 @@ class UsersController < ApplicationController
         else
             render json: @user.errors, status: :bad
         end 
+    end
+
+    def contact
+        authorize_request = AuthorizeApiRequest.new(request.headers)
+        result = authorize_request.call
+        user = result[:user]
+
+        @contact = User.where.not(email: user['email'])
+        response = { data: @contact }
+        render json: response, status: :ok
     end
 
     private
