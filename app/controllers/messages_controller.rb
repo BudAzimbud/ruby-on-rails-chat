@@ -45,6 +45,9 @@ class MessagesController < ApplicationController
     private
     
     def params_message
-    params.permit(:message, :receiver_id, :sender_id)
+        params.permit(:message, :receiver_id)
+          .tap do |p|
+              p[:message] = p[:message].presence
+          end
     end
 end
