@@ -5,13 +5,15 @@ class MessagesController < ApplicationController
             authorize_request = AuthorizeApiRequest.new(request.headers)
             result = authorize_request.call
             user = result[:user]
+            page = (params[:page].to_i - 1) * params[:limit].to_i
             @chat = Chat.where(receiver_id: user[:id]).or(Chat.where(sender_id: user[:id]))
-            .select(:receiver_id, :message, :name, :email)
+            .select(:receiver_id, :name, :email,)
             .distinct(:receiver)
             .joins(:receiver)
+            .limit(params[:limit])
+            .offset(page)
 
-            print @chat
-            render json: { data: @chat }, status: :ok
+            render json: { data: @chat , page: page}, status: :ok
         rescue ExceptionHandler::MissingToken, ExceptionHandler::InvalidToken, ExceptionHandler::AuthenticationError => e
             render json: { error: e.message }, status: :unauthorized
         end
@@ -22,7 +24,9 @@ class MessagesController < ApplicationController
             authorize_request = AuthorizeApiRequest.new(request.headers)
             result = authorize_request.call
             user = result[:user]
-            @chat = Chat.where(receiver_id: params['id']).and(Chat.where(sender_id: user[:id]))
+            page = (params[:page].to_i - 1) * params[:limit].to_i
+            @chat = Chat.where(receiver_id: params['id']).and(Chat.where(sender_id: user[:id])).limit(params[:limit])
+            .offset(page)
             render json: { data: @chat }, status: :ok
         rescue ExceptionHandler::MissingToken, ExceptionHandler::InvalidToken, ExceptionHandler::AuthenticationError => e
             render json: { error: e.message }, status: :unauthorized
@@ -55,4 +59,5 @@ class MessagesController < ApplicationController
               p[:message] = p[:message].presence
           end
     end
+
 end
