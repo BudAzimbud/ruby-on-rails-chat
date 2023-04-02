@@ -5,7 +5,12 @@ class MessagesController < ApplicationController
             authorize_request = AuthorizeApiRequest.new(request.headers)
             result = authorize_request.call
             user = result[:user]
-            @chat = Chat.select(:receiver_id).distinct
+            @chat = Chat.where(receiver_id: user[:id]).or(Chat.where(sender_id: user[:id]))
+            .select(:receiver_id, :message, :name, :email)
+            .distinct(:receiver)
+            .joins(:receiver)
+
+            print @chat
             render json: { data: @chat }, status: :ok
         rescue ExceptionHandler::MissingToken, ExceptionHandler::InvalidToken, ExceptionHandler::AuthenticationError => e
             render json: { error: e.message }, status: :unauthorized
