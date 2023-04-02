@@ -3,7 +3,9 @@ Rails.application.routes.draw do
   #add our register route
   post 'auth/register', to: 'users#register'
   post 'auth/login', to: 'users#login'
+  post 'messages', to: 'messages#created'
   get 'messages', to: 'messages#index'
+  get 'messages/:id', to: 'messages#detail'
   get 'contacts', to: 'users#contact'
   
 end
