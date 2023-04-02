@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2023_04_02_110123) do
     t.string "email"
     t.string "password_digest"
     t.string "photo_url"
+    t.boolean "available", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

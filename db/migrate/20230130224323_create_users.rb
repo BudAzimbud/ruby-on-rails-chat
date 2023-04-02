@@ -5,7 +5,8 @@ class CreateUsers < ActiveRecord::Migration[6.1]
       t.string :email
       t.string :password_digest
       t.string :photo_url
-
+      t.boolean :available, default: false
+      
       t.timestamps
     end
   end
